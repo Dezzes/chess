@@ -1,29 +1,29 @@
 import { Cell } from "../Cell";
 import { Colors } from "../Colors";
 import { Piece, PieceNames } from "./Piece";
-import WhiteIcon from "../../assets/figures/king-white.svg"
-import BlackIcon from "../../assets/figures/king-black.svg"
+import WhiteIcon from "../../assets/figures/queen-white.svg"
+import BlackIcon from "../../assets/figures/queen-black.svg"
 
-export class King extends Piece {
-
+export class Queen extends Piece {
     constructor(pieceColor: Colors, cell: Cell) {
         super(pieceColor, cell);
         this.icon = (pieceColor === Colors.BLACK) ? WhiteIcon : BlackIcon
-        this.name = PieceNames.KING;
+        this.name = PieceNames.QUEEN;
     }
 
     public canMove(target: Cell): boolean {
         if(!super.canMove(target)) {
             return false;
         }
-
-        const dx = Math.abs(this.cell.x - target.x);
-        const dy = Math.abs(this.cell.y - target.y);
-
-        if((dx === 1 && dy === 1) || (dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
+        if(this.cell.isEmptyVertical(target)) {
             return true;
         }
-
+        if(this.cell.isEmptyHorizontal(target)) {
+            return true;
+        }
+        if(this.cell.isEmptyDiagonal(target)) {
+            return true;
+        }
         return false;
     }
 }

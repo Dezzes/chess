@@ -13,15 +13,30 @@ export enum PieceNames {
 }
 
 export class Piece {
+
+    isFirstMove: boolean = true;
     icon: typeof icon | null;
-    pieceColor: Colors;
+    color: Colors;
     cell: Cell;
     name: PieceNames;
-
+        
     constructor(color: Colors, cell: Cell) {
-        this.icon = icon;
-        this.pieceColor = color;
+        this.icon = null;
+        this.color = color;
         this.cell = cell;
+        this.cell.piece = this;
         this.name = PieceNames.PIECE;
+    }
+
+    public canMove(cell: Cell): boolean {
+        if(cell.piece?.color === this.color) {
+            return false;
+        }
+        if(cell.piece?.name === PieceNames.KING) {
+            return false;
+        }
+        return true;
+    }
+    public movePiece(target: Cell) {
     }
 }
