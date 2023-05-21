@@ -1,9 +1,11 @@
 import { Cell } from "./Cell";
 import { Colors } from "./Colors";
+import { Player } from "./Player";
 import { Bishop } from "./pieces/Bishop";
 import { King } from "./pieces/King";
 import { Knight } from "./pieces/Knight";
 import { Pawn } from "./pieces/Pawn";
+import { PieceNames } from "./pieces/Piece";
 import { Queen } from "./pieces/Queen";
 import { Rook } from "./pieces/Rook";
 
@@ -15,9 +17,9 @@ export class Board {
             const row: Cell[] = [];  
             for (let x = 0; x < 8; x++) {
                 if(x + y % 2 === 0) {
-                    row.push(new Cell(this, x, y, Colors.WHITE, null)); // create white cell
+                    row.push(new Cell(this, x, y, null)); // create white cell
                 } else {
-                    row.push(new Cell(this, x, y, Colors.BLACK, null)); // create black cell
+                    row.push(new Cell(this, x, y, null)); // create black cell
                 }
             }
             this.cells.push(row);
@@ -73,12 +75,41 @@ export class Board {
 
     public highlightCells(selectedCell: Cell | null) {
        for (let i = 0; i < this.cells.length; i++) {
-        const row = this.cells[i];
-        for (let j = 0; j < row.length; j++) {
-            const currentCell = row[j];
-            currentCell.available = !!selectedCell?.piece?.canMove(currentCell);
+            const row = this.cells[i];
+            for (let j = 0; j < row.length; j++) {
+                const currentCell = row[j];
+                currentCell.available = !!selectedCell?.piece?.canMove(currentCell);
+            }
         }
-       } 
+    }
+    public isPlayerInCheck(player: Player) {
+        const kingCell = this.getPlayerKingCell(player);
+        if(kingCell) {
+            for (let i = 0; i < this.cells.length; i++) {
+                const row = this.cells[i];
+                for (let j = 0; j < row.length; j++) {
+                    const currentCell = row[j]; 
+                    if(currentCell.piece?.canMove(kingCell)) {
+                        player.isInCheck = true;
+                        return true;
+                    }
+                }
+            }
+        }
+        player.isInCheck = false;
+        return false;
+    }
+
+    public getPlayerKingCell(player: Player) {
+        for (let i = 0; i < this.cells.length; i++) {
+            const row = this.cells[i];
+            for (let j = 0; j < row.length; j++) {
+                const currentCell = row[j];
+                if(currentCell.piece?.color === player.color && currentCell.piece.name === PieceNames.KING) {
+                    return currentCell;
+                }
+            }
+        }
     }
 
     public getCopyBoard(): Board {

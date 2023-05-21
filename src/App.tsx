@@ -7,14 +7,17 @@ import { Colors } from './models/Colors';
 
 function App() {
   const [board, setBoard] = React.useState(new Board());
-  const [whitePlayer, setWhitePlayer] = React.useState<Player>(new Player(Colors.WHITE));
-  const [blackPlayer, setBlackPlayer] = React.useState<Player>(new Player(Colors.BLACK));
+  const [whitePlayer] = React.useState<Player>(new Player(Colors.WHITE));
+  const [blackPlayer] = React.useState<Player>(new Player(Colors.BLACK));
   const [currentPlayer, setCurrentPlayer] = React.useState<Player | null>(null);
   
   React.useEffect(() => {
     restart();
     setCurrentPlayer(blackPlayer);
   }, [])
+
+  React.useEffect(() => {
+  }, [currentPlayer])
   
   function restart() {
     const board = new Board();
@@ -23,14 +26,22 @@ function App() {
     setBoard(board);
   }
 
+  function updateBoard() {
+    const newBoard = board.getCopyBoard();
+    setBoard(newBoard);
+}
+
   function swapPlayer() {
     // setCurrentPlayer(blackPlayer)
-    setCurrentPlayer(currentPlayer?.color === Colors.BLACK ? whitePlayer : blackPlayer)
+    const player = currentPlayer?.color === Colors.BLACK ? whitePlayer : blackPlayer
+    setCurrentPlayer(player);
+    board.isPlayerInCheck(player);
+    console.log(`player ${player.color} in check`, player.isInCheck);
   }
   return (
     <BoardComponent
       board={board}
-      setBoard={setBoard}
+      updateBoard={updateBoard}
       swapPlayer={swapPlayer}
       currentPlayer={currentPlayer}
     />

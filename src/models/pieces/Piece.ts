@@ -32,9 +32,6 @@ export class Piece {
         if(cell.piece?.color === this.color) {
             return false;
         }
-        if(cell.piece?.name === PieceNames.KING) {
-            return false;
-        }
         return true;
     }
     public movePiece(target: Cell) {

@@ -7,11 +7,11 @@ import { Player } from '../models/Player';
 interface Props {
     board: Board;
     currentPlayer: Player | null;
-    setBoard: (board: Board) => void;
-    swapPlayer: () => void
+    swapPlayer: () => void;
+    updateBoard: () => void;
 }
 
-export const BoardComponent: React.FC<Props> = ({board, currentPlayer, swapPlayer, setBoard}) => {
+export const BoardComponent: React.FC<Props> = ({board, currentPlayer, swapPlayer, updateBoard}) => {
 
     const [selectedCell, setSelectedCell] = React.useState<Cell | null>(null);
 
@@ -27,11 +27,6 @@ export const BoardComponent: React.FC<Props> = ({board, currentPlayer, swapPlaye
         }
     }
 
-    function updateBoard() {
-        const newBoard = board.getCopyBoard();
-        setBoard(newBoard);
-    }
-
     function highlightCells() {
         board.highlightCells(selectedCell);
         updateBoard();
@@ -39,7 +34,6 @@ export const BoardComponent: React.FC<Props> = ({board, currentPlayer, swapPlaye
 
     useEffect(() => {
         highlightCells();
-
     }, [selectedCell])
     
     return (
@@ -52,6 +46,7 @@ export const BoardComponent: React.FC<Props> = ({board, currentPlayer, swapPlaye
                         key={cell.id}
                         cell={cell}
                         isSelected={selectedCell?.x === cell.x && selectedCell.y === cell.y}
+                        currentPlayer={currentPlayer}
                     />
                 ))}
             </React.Fragment>
